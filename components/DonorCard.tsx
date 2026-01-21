@@ -28,6 +28,9 @@ export default function DonorCard({
       <p className="text-sm text-gray-700">
         <strong>Age:</strong> {age}
       </p>
+         <p className="text-sm text-gray-700">
+        <strong>city:</strong> {city}
+      </p>
       <p className="text-sm text-gray-700">
         <strong>Last Donation:</strong> {lastDonation}
       </p>

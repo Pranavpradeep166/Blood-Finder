@@ -2,17 +2,26 @@
 
 import { useState } from "react";
 
-export default function SearchForm() {
+type SearchFormProps = {
+  onSearch: (bloodGroup: string) => void;
+  onClear: () => void;
+  clearing: boolean;
+  searched: boolean;
+};
+
+export default function SearchForm({ onSearch,onClear,clearing,searched }: SearchFormProps) {
     const [bloodGroup, setBloodGroup] = useState("");
     const [city, setCity] = useState("");
 
+    
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log({
-            bloodGroup,
-            city,
-        });
-    };
+        if (bloodGroup) {
+            onSearch(bloodGroup);
+        }
+        };
+
 
     return (
         <form onSubmit={handleSubmit} className="text-black p-6 rounded-lg shadow-md">
@@ -50,6 +59,14 @@ export default function SearchForm() {
                 Search Donar
 
             </button>
+            <button type="button"
+            onClick={onClear}
+                        className="bg-gray-600 text-white px-6 py-3 rounded-md hover:bg-gray-700 transition"
+                    >
+                        {clearing ? "Clearing..." : "Clear Donors"}
+
+            </button>
+            
         </form >
 
 

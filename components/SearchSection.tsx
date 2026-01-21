@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import DonorCard from "./DonorCard";
+import SearchForm from "./SearchForm";
 
 export default function SearchSection() {
     const [donors, setDonors] = useState<any[]>([]);
@@ -11,8 +12,14 @@ export default function SearchSection() {
     const [searched, setSearched] = useState(false);
     const [showAlreadySearchedWarning, setShowAlreadySearchedWarning] = useState(false);
     const [showNothingToClearWarning, setShowNothingToClearWarning] = useState(false);
+    const [selectedBloodGroup, setselctedBloodGroup] = useState("")
 
-    const fetchDonors = async () => {
+    const handleSearch=(bloodGroup: string) => {
+        setselctedBloodGroup(bloodGroup);
+        fetchDonors(bloodGroup);
+    }
+
+    const fetchDonors = async (bloodGroup: string) => {
         if (searched) {
             setShowAlreadySearchedWarning(true);
             setTimeout(() => setShowAlreadySearchedWarning(false), 3000);
@@ -44,8 +51,13 @@ export default function SearchSection() {
                 },
             ];
 
+            const filteredDonors =response.filter(
+                (donors) => donors.bloodGroup === bloodGroup
+            );
+            setDonors(filteredDonors)
             setSearched(true);
-            setDonors(response);
+
+            
         } catch (err) {
             setError("Something went wrong");
         } finally {
@@ -66,6 +78,7 @@ export default function SearchSection() {
             setDonors([]);
             setError("");
             setSearched(false);
+            setselctedBloodGroup("");
         } catch (err) {
             setError("Failed to clear donors");
         } finally {
@@ -76,18 +89,12 @@ export default function SearchSection() {
     return (
         <div className="mt-10 mx-auto">
             <div className="flex flex-row gap-10">
-                <button
-                    onClick={fetchDonors}
-                    className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors"
-                >
-                    {loading ? "Fetching..." : "Fetch Donors"}
-                </button>
-                <button
-                    onClick={clearDonors}
-                    className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors"
-                >
-                    {clearing ? "Clearing..." : "Clear Donors"}
-                </button>
+                <SearchForm onSearch={handleSearch}
+                onClear={clearDonors}
+                clearing={clearing}
+                searched={searched} />
+                     
+               
             </div>
 
             {clearing && <p className="mt-4 text-gray-600">Clearing donors...</p>}
